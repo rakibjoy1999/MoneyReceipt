@@ -1,7 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BD Medical Research and Consultancy - Invoice</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{
+  font-family: "Times New Roman", serif;
+  background:#f2f2f2;
+  padding:20px;
+}
+
+/* A4 container */
+.container{
+  max-width:900px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border:2px solid #000;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:15px;
+  border-bottom:2px solid #000;
+  padding-bottom:10px;
+  margin-bottom:15px;
+}
+
+.header img{
+  width:80px;
+  height:80px;
+}
+
+.header-text{
+  text-align:center;
+}
+
+.header-text h1{
+  margin:0;
+  font-size:24px;
+}
+
+.header-text p{
+  margin:2px;
+  font-size:14px;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border:1px solid #000;
+}
+
+button{
+  padding:10px;
+  margin-top:10px;
+  background:black;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+/* RECEIPT */
+.receipt{
+  margin-top:20px;
+  padding:20px;
+  border:1px solid #000;
+  background:#fff;
+}
+
+.center{text-align:center;}
+
+/* PRINT STYLE */
+@media print {
+
+  body{
+    background:white;
+    padding:0;
+  }
+
+  input, button{
+    display:none !important;
+  }
+
+  .container{
+    border:none;
+  }
+
+  .receipt{
+    border:none;
+  }
+
+  @page{
+    size:A4;
+    margin:15mm;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <img src="logo.png" alt="Logo">
+
+  <div class="header-text">
+    <h1>BD Medical Research and Consultancy</h1>
+    <p>Journal Invoice / Money Receipt System</p>
+  </div>
+</div>
+
+<!-- INPUT -->
+<input id="receiptNo" placeholder="Receipt No (e.g. 001)">
+<input id="name" placeholder="Receiver Name">
+<input id="contract" placeholder="Contract Amount (TK)">
+<input id="paid" placeholder="Paid Amount (TK)">
+<input id="amount" placeholder="This Payment Amount (TK)">
+<input id="amountText" placeholder="Amount in Words">
+<input id="purpose" placeholder="Purpose">
+<input id="articleTitle" placeholder="Article Title">
+<input id="date" type="date">
+
+<button onclick="generateReceipt()">Generate Invoice</button>
+<button onclick="window.print()">🖨 Print A4</button>
+<button onclick="downloadPDF()">⬇ Download PDF</button>
+
 <!-- RECEIPT -->
 <div class="receipt" id="receipt">
 
-  <h2 class="center">MONEY RECEIPT</h2>
+  <h2 class="center">JOURNAL INVOICE / MONEY RECEIPT</h2>
 
   <p><b>Receipt No:</b> <span id="rNo"></span></p>
   <p><b>Date:</b> <span id="rDate"></span></p>
@@ -32,3 +171,57 @@
 
   <p class="center"><b>BD Medical Research and Consultancy</b></p>
 </div>
+
+</div>
+
+<script>
+
+function generateReceipt(){
+
+  let contract = parseFloat(document.getElementById("contract").value) || 0;
+  let paid = parseFloat(document.getElementById("paid").value) || 0;
+  let due = contract - paid;
+
+  document.getElementById("rNo").innerText = document.getElementById("receiptNo").value;
+  document.getElementById("rName").innerText = document.getElementById("name").value;
+
+  document.getElementById("rContract").innerText = contract;
+  document.getElementById("rPaid").innerText = paid;
+  document.getElementById("rDue").innerText = due;
+
+  document.getElementById("rAmount").innerText = document.getElementById("amount").value;
+  document.getElementById("rWords").innerText = document.getElementById("amountText").value;
+
+  document.getElementById("rPurpose").innerText = document.getElementById("purpose").value;
+  document.getElementById("rArticleTitle").innerText = document.getElementById("articleTitle").value;
+
+  document.getElementById("rDate").innerText = document.getElementById("date").value;
+}
+
+function downloadPDF(){
+
+  const receipt = document.getElementById("receipt");
+
+  html2canvas(receipt, {
+    scale: 2,
+    useCORS: true
+  }).then(canvas => {
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jspdf.jsPDF("p","mm","a4");
+
+    const imgWidth = 190;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+    pdf.save("BD_Medical_Invoice.pdf");
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
