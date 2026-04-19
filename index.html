@@ -22,11 +22,6 @@ body{
   border:2px solid #000;
 }
 
-h1{
-  text-align:center;
-  font-size:28px;
-}
-
 .header{
   text-align:center;
   margin-bottom:10px;
@@ -81,7 +76,10 @@ button{
 <input id="paid" placeholder="Paid Amount (TK)">
 <input id="amount" placeholder="This Payment Amount (TK)">
 <input id="amountText" placeholder="Amount in Words">
+
 <input id="purpose" placeholder="Purpose">
+<input id="articleTitle" placeholder="Article Title">
+
 <input id="date" type="date">
 
 <button onclick="generateReceipt()">Generate Receipt</button>
@@ -105,7 +103,10 @@ button{
 
   <p><b>Payment Amount:</b> <span id="rAmount"></span> TK</p>
   <p><b>In Words:</b> <span id="rWords"></span></p>
+
   <p><b>Purpose:</b> <span id="rPurpose"></span></p>
+
+  <p><b>Article Title:</b> <span id="rArticleTitle"></span></p>
 
   <br><br>
 
@@ -124,13 +125,17 @@ function generateReceipt(){
 
   document.getElementById("rNo").innerText = document.getElementById("receiptNo").value;
   document.getElementById("rName").innerText = document.getElementById("name").value;
+
   document.getElementById("rContract").innerText = contract;
   document.getElementById("rPaid").innerText = paid;
   document.getElementById("rDue").innerText = due;
 
   document.getElementById("rAmount").innerText = document.getElementById("amount").value;
   document.getElementById("rWords").innerText = document.getElementById("amountText").value;
+
   document.getElementById("rPurpose").innerText = document.getElementById("purpose").value;
+  document.getElementById("rArticleTitle").innerText = document.getElementById("articleTitle").value;
+
   document.getElementById("rDate").innerText = document.getElementById("date").value;
 }
 
