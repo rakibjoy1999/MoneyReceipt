@@ -77,7 +77,9 @@ button{
 <!-- INPUT FORM -->
 <input id="receiptNo" placeholder="Receipt No (e.g. 001)">
 <input id="name" placeholder="Receiver Name">
-<input id="amount" placeholder="Amount (TK)">
+<input id="contract" placeholder="Contract Amount (TK)">
+<input id="paid" placeholder="Paid Amount (TK)">
+<input id="amount" placeholder="This Payment Amount (TK)">
 <input id="amountText" placeholder="Amount in Words">
 <input id="purpose" placeholder="Purpose">
 <input id="date" type="date">
@@ -96,7 +98,12 @@ button{
   <hr>
 
   <p><b>Received From:</b> <span id="rName"></span></p>
-  <p><b>Amount:</b> <span id="rAmount"></span> TK</p>
+
+  <p><b>Contract Amount:</b> <span id="rContract"></span> TK</p>
+  <p><b>Paid Amount:</b> <span id="rPaid"></span> TK</p>
+  <p><b>Due Amount:</b> <span id="rDue"></span> TK</p>
+
+  <p><b>Payment Amount:</b> <span id="rAmount"></span> TK</p>
   <p><b>In Words:</b> <span id="rWords"></span></p>
   <p><b>Purpose:</b> <span id="rPurpose"></span></p>
 
@@ -110,8 +117,17 @@ button{
 <script>
 
 function generateReceipt(){
+
+  let contract = parseFloat(document.getElementById("contract").value) || 0;
+  let paid = parseFloat(document.getElementById("paid").value) || 0;
+  let due = contract - paid;
+
   document.getElementById("rNo").innerText = document.getElementById("receiptNo").value;
   document.getElementById("rName").innerText = document.getElementById("name").value;
+  document.getElementById("rContract").innerText = contract;
+  document.getElementById("rPaid").innerText = paid;
+  document.getElementById("rDue").innerText = due;
+
   document.getElementById("rAmount").innerText = document.getElementById("amount").value;
   document.getElementById("rWords").innerText = document.getElementById("amountText").value;
   document.getElementById("rPurpose").innerText = document.getElementById("purpose").value;
@@ -129,7 +145,6 @@ function downloadPDF(){
     const pdf = new jsPDF("p","mm","a4");
 
     const imgWidth = 190;
-    const pageHeight = 295;
     const imgHeight = canvas.height * imgWidth / canvas.width;
 
     pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
