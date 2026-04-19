@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BD Medical Research and Consultancy - Money Receipt</title>
+<title>BD Medical Research and Consultancy - Invoice</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,6 +14,7 @@ body{
   padding:20px;
 }
 
+/* A4 Container */
 .container{
   max-width:900px;
   margin:auto;
@@ -22,11 +23,37 @@ body{
   border:2px solid #000;
 }
 
+/* HEADER - Journal Style */
 .header{
-  text-align:center;
-  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:15px;
+  border-bottom:2px solid #000;
+  padding-bottom:10px;
+  margin-bottom:15px;
 }
 
+.header img{
+  width:80px;
+  height:80px;
+}
+
+.header-text{
+  text-align:center;
+}
+
+.header-text h1{
+  margin:0;
+  font-size:24px;
+}
+
+.header-text p{
+  margin:2px;
+  font-size:14px;
+}
+
+/* Inputs */
 input{
   width:100%;
   padding:8px;
@@ -43,6 +70,7 @@ button{
   cursor:pointer;
 }
 
+/* Invoice Style */
 .receipt{
   margin-top:20px;
   padding:20px;
@@ -50,12 +78,35 @@ button{
   background:#fff;
 }
 
-.small{
-  font-size:14px;
-}
+.center{text-align:center;}
+.small{font-size:14px;}
 
-.center{
-  text-align:center;
+/* PRINT STYLE (A4 PERFECT) */
+@media print {
+
+  body{
+    background:white;
+    padding:0;
+  }
+
+  .container{
+    border:none;
+    max-width:100%;
+    padding:0;
+  }
+
+  input, button{
+    display:none !important;
+  }
+
+  .receipt{
+    border:none;
+  }
+
+  @page{
+    size:A4;
+    margin:15mm;
+  }
 }
 </style>
 </head>
@@ -64,31 +115,34 @@ button{
 
 <div class="container">
 
+<!-- HEADER -->
 <div class="header">
-  <h1>BD Medical Research and Consultancy</h1>
-  <p class="small">Money Receipt System</p>
+  <img src="logo.png" alt="Logo">
+
+  <div class="header-text">
+    <h1>BD Medical Research and Consultancy</h1>
+    <p>Money Receipt / Journal Invoice System</p>
+  </div>
 </div>
 
-<!-- INPUT FORM -->
+<!-- INPUT -->
 <input id="receiptNo" placeholder="Receipt No (e.g. 001)">
 <input id="name" placeholder="Receiver Name">
 <input id="contract" placeholder="Contract Amount (TK)">
 <input id="paid" placeholder="Paid Amount (TK)">
 <input id="amount" placeholder="This Payment Amount (TK)">
 <input id="amountText" placeholder="Amount in Words">
-
 <input id="purpose" placeholder="Purpose">
 <input id="articleTitle" placeholder="Article Title">
-
 <input id="date" type="date">
 
-<button onclick="generateReceipt()">Generate Receipt</button>
-<button onclick="downloadPDF()">Download PDF</button>
+<button onclick="generateReceipt()">Generate Invoice</button>
+<button onclick="window.print()">🖨 Print A4</button>
 
 <!-- RECEIPT -->
 <div class="receipt" id="receipt">
 
-  <h2 class="center">MONEY RECEIPT</h2>
+  <h2 class="center">JOURNAL INVOICE / MONEY RECEIPT</h2>
 
   <p><b>Receipt No:</b> <span id="rNo"></span></p>
   <p><b>Date:</b> <span id="rDate"></span></p>
@@ -105,7 +159,6 @@ button{
   <p><b>In Words:</b> <span id="rWords"></span></p>
 
   <p><b>Purpose:</b> <span id="rPurpose"></span></p>
-
   <p><b>Article Title:</b> <span id="rArticleTitle"></span></p>
 
   <br><br>
@@ -137,26 +190,6 @@ function generateReceipt(){
   document.getElementById("rArticleTitle").innerText = document.getElementById("articleTitle").value;
 
   document.getElementById("rDate").innerText = document.getElementById("date").value;
-}
-
-function downloadPDF(){
-
-  const receipt = document.getElementById("receipt");
-
-  html2canvas(receipt, {scale:2}).then(canvas => {
-
-    const imgData = canvas.toDataURL("image/png");
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p","mm","a4");
-
-    const imgWidth = 190;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-
-    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-    pdf.save("BD_Medical_Receipt.pdf");
-
-  });
-
 }
 
 </script>
