@@ -1,148 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>BD Medical Research and Consultancy - Invoice</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-body{
-  font-family: "Times New Roman", serif;
-  background:#f2f2f2;
-  padding:20px;
-}
-
-/* A4 Container */
-.container{
-  max-width:900px;
-  margin:auto;
-  background:white;
-  padding:20px;
-  border:2px solid #000;
-}
-
-/* HEADER - Journal Style */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:15px;
-  border-bottom:2px solid #000;
-  padding-bottom:10px;
-  margin-bottom:15px;
-}
-
-.header img{
-  width:80px;
-  height:80px;
-}
-
-.header-text{
-  text-align:center;
-}
-
-.header-text h1{
-  margin:0;
-  font-size:24px;
-}
-
-.header-text p{
-  margin:2px;
-  font-size:14px;
-}
-
-/* Inputs */
-input{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border:1px solid #000;
-}
-
-button{
-  padding:10px;
-  margin-top:10px;
-  background:black;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-/* Invoice Style */
-.receipt{
-  margin-top:20px;
-  padding:20px;
-  border:1px solid #000;
-  background:#fff;
-}
-
-.center{text-align:center;}
-.small{font-size:14px;}
-
-/* PRINT STYLE (A4 PERFECT) */
-@media print {
-
-  body{
-    background:white;
-    padding:0;
-  }
-
-  .container{
-    border:none;
-    max-width:100%;
-    padding:0;
-  }
-
-  input, button{
-    display:none !important;
-  }
-
-  .receipt{
-    border:none;
-  }
-
-  @page{
-    size:A4;
-    margin:15mm;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<!-- HEADER -->
-<div class="header">
-  <img src="logo.png" alt="Logo">
-
-  <div class="header-text">
-    <h1>BD Medical Research and Consultancy</h1>
-    <p>Money Receipt / Journal Invoice System</p>
-  </div>
-</div>
-
-<!-- INPUT -->
-<input id="receiptNo" placeholder="Receipt No (e.g. 001)">
-<input id="name" placeholder="Receiver Name">
-<input id="contract" placeholder="Contract Amount (TK)">
-<input id="paid" placeholder="Paid Amount (TK)">
-<input id="amount" placeholder="This Payment Amount (TK)">
-<input id="amountText" placeholder="Amount in Words">
-<input id="purpose" placeholder="Purpose">
-<input id="articleTitle" placeholder="Article Title">
-<input id="date" type="date">
-
-<button onclick="generateReceipt()">Generate Invoice</button>
-<button onclick="window.print()">🖨 Print A4</button>
-
 <!-- RECEIPT -->
 <div class="receipt" id="receipt">
 
-  <h2 class="center">JOURNAL INVOICE / MONEY RECEIPT</h2>
+  <h2 class="center">MONEY RECEIPT</h2>
 
   <p><b>Receipt No:</b> <span id="rNo"></span></p>
   <p><b>Date:</b> <span id="rDate"></span></p>
@@ -151,48 +10,25 @@ button{
 
   <p><b>Received From:</b> <span id="rName"></span></p>
 
+  <p><b>Purpose:</b> <span id="rPurpose"></span></p>
+
+  <p><b>Article Title:</b> <span id="rArticleTitle"></span></p>
+
   <p><b>Contract Amount:</b> <span id="rContract"></span> TK</p>
+
   <p><b>Paid Amount:</b> <span id="rPaid"></span> TK</p>
+
   <p><b>Due Amount:</b> <span id="rDue"></span> TK</p>
 
   <p><b>Payment Amount:</b> <span id="rAmount"></span> TK</p>
+
   <p><b>In Words:</b> <span id="rWords"></span></p>
 
-  <p><b>Purpose:</b> <span id="rPurpose"></span></p>
-  <p><b>Article Title:</b> <span id="rArticleTitle"></span></p>
+  <br><br>
+
+  <p><b>Received By:</b> Rakib Joy</p>
 
   <br><br>
 
   <p class="center"><b>BD Medical Research and Consultancy</b></p>
 </div>
-
-</div>
-
-<script>
-
-function generateReceipt(){
-
-  let contract = parseFloat(document.getElementById("contract").value) || 0;
-  let paid = parseFloat(document.getElementById("paid").value) || 0;
-  let due = contract - paid;
-
-  document.getElementById("rNo").innerText = document.getElementById("receiptNo").value;
-  document.getElementById("rName").innerText = document.getElementById("name").value;
-
-  document.getElementById("rContract").innerText = contract;
-  document.getElementById("rPaid").innerText = paid;
-  document.getElementById("rDue").innerText = due;
-
-  document.getElementById("rAmount").innerText = document.getElementById("amount").value;
-  document.getElementById("rWords").innerText = document.getElementById("amountText").value;
-
-  document.getElementById("rPurpose").innerText = document.getElementById("purpose").value;
-  document.getElementById("rArticleTitle").innerText = document.getElementById("articleTitle").value;
-
-  document.getElementById("rDate").innerText = document.getElementById("date").value;
-}
-
-</script>
-
-</body>
-</html>
