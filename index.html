@@ -2,226 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>BD Medical Research and Consultancy - Invoice</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
-body{
-  font-family: "Times New Roman", serif;
-  background:#f2f2f2;
-  padding:20px;
-}
-
-/* A4 container */
-.container{
-  max-width:900px;
-  margin:auto;
-  background:white;
-  padding:20px;
-  border:2px solid #000;
-}
-
-/* HEADER */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:15px;
-  border-bottom:2px solid #000;
-  padding-bottom:10px;
-  margin-bottom:15px;
-}
-
-.header img{
-  width:80px;
-  height:80px;
-}
-
-.header-text{
-  text-align:center;
-}
-
-.header-text h1{
-  margin:0;
-  font-size:24px;
-}
-
-.header-text p{
-  margin:2px;
-  font-size:14px;
-}
-
-/* INPUT */
-input{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border:1px solid #000;
-}
-
-button{
-  padding:10px;
-  margin-top:10px;
-  background:black;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-/* RECEIPT */
-.receipt{
-  margin-top:20px;
-  padding:20px;
-  border:1px solid #000;
-  background:#fff;
-}
-
-.center{text-align:center;}
-
-/* PRINT STYLE */
-@media print {
-
-  body{
-    background:white;
-    padding:0;
-  }
-
-  input, button{
-    display:none !important;
-  }
-
-  .container{
-    border:none;
-  }
-
-  .receipt{
-    border:none;
-  }
-
-  @page{
-    size:A4;
-    margin:15mm;
-  }
-}
+body{font-family:"Times New Roman",serif;background:#f2f2f2;margin:0;padding:20px}
+.container{max-width:900px;margin:auto;background:#fff;padding:20px;border:2px solid #000}
+input,button{width:100%;padding:8px;margin:6px 0;box-sizing:border-box}
+.flex{display:flex;gap:10px}.flex>div{flex:1}
+.receipt{border:1px solid #000;padding:15px;margin-top:20px}
+.center{text-align:center}
+img.logo{width:120px;height:120px;object-fit:cover}
+table{width:100%}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
-<!-- HEADER -->
-<div class="header">
-  <img src="logo.png" alt="Logo">
-
-  <div class="header-text">
-    <h1>BD Medical Research and Consultancy</h1>
-    <p>Journal Invoice / Money Receipt System</p>
-  </div>
+<h2>BD Medical Research and Consultancy</h2>
+<input id="receiptNo" placeholder="Receipt No">
+<input id="name" placeholder="Client Name">
+<div class="flex">
+<div><input id="contract" placeholder="Contract Amount"></div>
+<div><input id="paid" placeholder="Paid Amount"></div>
 </div>
-
-<!-- INPUT -->
-<input id="receiptNo" placeholder="Receipt No (e.g. 001)">
-<input id="name" placeholder="Receiver Name">
-<input id="contract" placeholder="Contract Amount (TK)">
-<input id="paid" placeholder="Paid Amount (TK)">
-<input id="amount" placeholder="This Payment Amount (TK)">
-<input id="amountText" placeholder="Amount in Words">
 <input id="purpose" placeholder="Purpose">
-<input id="articleTitle" placeholder="Article Title">
+<input id="amountText" placeholder="Amount in Words">
 <input id="date" type="date">
 
+<h3>Article Titles</h3>
+<div id="items"></div>
+<button onclick="addItem()">+ Add Article</button>
+
+<p>Logo</p><input type="file" onchange="loadLogo(event)">
+<p>Signature</p><input type="file" onchange="loadSign(event)">
+<p>Received By Photo</p><input type="file" onchange="loadPhoto(event)">
 <button onclick="generateReceipt()">Generate Invoice</button>
-<button onclick="window.print()">🖨 Print A4</button>
-<button onclick="downloadPDF()">⬇ Download PDF</button>
 
-<!-- RECEIPT -->
-<div class="receipt" id="receipt">
-
-  <h2 class="center">JOURNAL INVOICE / MONEY RECEIPT</h2>
-
-  <p><b>Receipt No:</b> <span id="rNo"></span></p>
-  <p><b>Date:</b> <span id="rDate"></span></p>
-
-  <hr>
-
-  <p><b>Received From:</b> <span id="rName"></span></p>
-
-  <p><b>Purpose:</b> <span id="rPurpose"></span></p>
-
-  <p><b>Article Title:</b> <span id="rArticleTitle"></span></p>
-
-  <p><b>Contract Amount:</b> <span id="rContract"></span> TK</p>
-
-  <p><b>Paid Amount:</b> <span id="rPaid"></span> TK</p>
-
-  <p><b>Due Amount:</b> <span id="rDue"></span> TK</p>
-
-  <p><b>Payment Amount:</b> <span id="rAmount"></span> TK</p>
-
-  <p><b>In Words:</b> <span id="rWords"></span></p>
-
-  <br><br>
-
-  <p><b>Received By:</b> Rakib Joy</p>
-
-  <br><br>
-
-  <p class="center"><b>BD Medical Research and Consultancy</b></p>
+<div class="receipt">
+<div class="center">
+<img id="receiptLogo" class="logo" src="">
+<h2>JOURNAL INVOICE / MONEY RECEIPT</h2>
 </div>
-
+<p><b>Receipt:</b> <span id="rNo"></span></p>
+<p><b>Client:</b> <span id="rName"></span></p>
+<p><b>Purpose:</b> <span id="rPurpose"></span></p>
+<p><b>Date:</b> <span id="rDate"></span></p>
+<ul id="rArticles"></ul>
+<hr>
+<table>
+<tr>
+<td align="center">
+<img id="signPreview" style="width:180px;height:80px;display:none"><br>
+_____________________<br><b>Received By</b><br>Rakib Joy
+</td>
+<td align="center">
+<img id="photoPreview" style="width:120px;height:140px;border:1px solid #000;display:none;object-fit:cover"><br>
+Passport Size Photo
+</td>
+</tr>
+</table>
 </div>
-
+</div>
 <script>
-
+let count=0;
+function addItem(){
+ const d=document.createElement('div');
+ d.innerHTML='<input placeholder="Article Title">';
+ document.getElementById('items').appendChild(d);
+}
+addItem();
+function loadLogo(e){
+ let u=URL.createObjectURL(e.target.files[0]);
+ document.getElementById('receiptLogo').src=u;
+}
+function loadSign(e){
+ let u=URL.createObjectURL(e.target.files[0]);
+ let i=document.getElementById('signPreview');
+ i.src=u;i.style.display='block';
+}
+function loadPhoto(e){
+ let u=URL.createObjectURL(e.target.files[0]);
+ let i=document.getElementById('photoPreview');
+ i.src=u;i.style.display='block';
+}
 function generateReceipt(){
-
-  let contract = parseFloat(document.getElementById("contract").value) || 0;
-  let paid = parseFloat(document.getElementById("paid").value) || 0;
-  let due = contract - paid;
-
-  document.getElementById("rNo").innerText = document.getElementById("receiptNo").value;
-  document.getElementById("rName").innerText = document.getElementById("name").value;
-
-  document.getElementById("rContract").innerText = contract;
-  document.getElementById("rPaid").innerText = paid;
-  document.getElementById("rDue").innerText = due;
-
-  document.getElementById("rAmount").innerText = document.getElementById("amount").value;
-  document.getElementById("rWords").innerText = document.getElementById("amountText").value;
-
-  document.getElementById("rPurpose").innerText = document.getElementById("purpose").value;
-  document.getElementById("rArticleTitle").innerText = document.getElementById("articleTitle").value;
-
-  document.getElementById("rDate").innerText = document.getElementById("date").value;
+ rNo.textContent=receiptNo.value;
+ rName.textContent=name.value;
+ rPurpose.textContent=purpose.value;
+ rDate.textContent=date.value;
+ let ul=document.getElementById('rArticles');
+ ul.innerHTML='';
+ document.querySelectorAll('#items input').forEach(x=>{
+   if(x.value){let li=document.createElement('li');li.textContent=x.value;ul.appendChild(li);}
+ });
 }
-
-function downloadPDF(){
-
-  const receipt = document.getElementById("receipt");
-
-  html2canvas(receipt, {
-    scale: 2,
-    useCORS: true
-  }).then(canvas => {
-
-    const imgData = canvas.toDataURL("image/png");
-
-    const pdf = new jspdf.jsPDF("p","mm","a4");
-
-    const imgWidth = 190;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-
-    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-    pdf.save("BD_Medical_Invoice.pdf");
-
-  });
-
-}
-
 </script>
-
 </body>
 </html>
